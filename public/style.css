@@ -1,0 +1,120 @@
+body {
+    font-family: sans-serif;
+    margin: 0;
+    padding: 2rem;
+    background-color: #f9f9f9;
+    color: #333;
+  }
+  
+  header {
+    max-width: 700px;
+    margin: auto;
+    text-align: center;
+  }
+  
+  nav a {
+    display: inline-block;
+    margin-top: 1rem;
+    padding: 0.5rem 1rem;
+    background-color: #007acc;
+    color: white;
+    text-decoration: none;
+    border-radius: 4px;
+  }
+  
+  nav a:hover {
+    background-color: #005f99;
+  }
+
+  .question-block {
+    margin-bottom: 1.5rem;
+  }
+  
+  form {
+    max-width: 700px;
+    margin: auto;
+    font-size: 1rem;
+    line-height: 1.6;
+  }
+  
+  button {
+    padding: 0.5rem 1rem;
+    background-color: #007acc;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  button:hover {
+    background-color: #005f99;
+  }
+  .result-box {
+    max-width: 600px;
+    margin: 2rem auto;
+    padding: 1.5rem;
+    background-color: #ffffff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    font-size: 1.1rem;
+    line-height: 1.6;
+  }
+  
+  .result-box h2 {
+    margin-top: 0;
+    color: #007acc;
+    text-align: center;
+  }
+  
+  .result-box ul {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .result-box li {
+    padding: 0.3rem 0;
+  }
+
+  form, .form-page {
+    max-width: 700px;
+    margin: auto;
+  }
+  #start-over-btn {
+    margin-top: 1rem;
+    padding: 0.5rem 1rem;
+    background-color: #6c757d;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  #start-over-btn:hover {
+    background-color: #5a6268;
+  }
+  #download-btn, #start-over-btn {
+    margin: 0.5rem;
+    padding: 0.5rem 1rem;
+    background-color: #6c757d;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  #download-btn:hover, #start-over-btn:hover {
+    background-color: #5a6268;
+  }
+  #result-section {
+    display: block !important;
+    padding: 1em;
+  }
+  .error-message {
+    color: red;
+    font-size: 0.9rem;
+    margin-top: 0.2rem;
+    display: block;
+  }
+  
+  

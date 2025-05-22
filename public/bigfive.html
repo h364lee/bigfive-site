@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Big Five Personality Test</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <h1>Big Five Personality Test</h1>
+    <p>Please rate how much you agree with each of the following statements.</p>
+    <p>Use a scale from 1 (Strongly Disagree) to 5 (Strongly Agree).</p>
+  </header>
+
+  <main>
+    <form id="bigfive-form">
+      <!-- PAGE 0: DEMOGRAPHICS -->
+      <div class="form-page" id="page-0">
+        <h2>Participant Information</h2>
+        <label for="name">Name (required):</label><br>
+        <input type="text" id="name" name="name" required><br>
+        <span id="name-error" class="error-message"></span><br>
+
+        <label for="sex">Sex (required):</label><br>
+        <select id="sex" name="sex" required>
+          <option value="">-- Select --</option>
+          <option value="Male">Male</option>
+          <option value="Female">Female</option>
+          <option value="Other">Other</option>
+          <option value="Prefer not to say">Prefer not to say</option>
+        </select><br>
+        <span id="sex-error" class="error-message"></span><br>
+
+        <label for="age">Age (required):</label><br>
+        <input type="number" id="age" name="age" min="10" max="120" required><br>
+        <span id="age-error" class="error-message"></span><br>
+      </div>
+
+      <!-- PAGE 1: QUESTIONS -->
+      <div class="form-page" id="page-1">
+        <div class="question-block">
+          <label>1. I have a rich vocabulary.</label><br />
+          <input type="radio" name="q1" value="1" required> 1
+          <input type="radio" name="q1" value="2"> 2
+          <input type="radio" name="q1" value="3"> 3
+          <input type="radio" name="q1" value="4"> 4
+          <input type="radio" name="q1" value="5"> 5
+        </div>
+        <div class="question-block">
+          <label>2. I am always prepared.</label><br />
+          <input type="radio" name="q2" value="1" required> 1
+          <input type="radio" name="q2" value="2"> 2
+          <input type="radio" name="q2" value="3"> 3
+          <input type="radio" name="q2" value="4"> 4
+          <input type="radio" name="q2" value="5"> 5
+        </div>
+        <div class="question-block">
+          <label>3. I am the life of the party.</label><br />
+          <input type="radio" name="q3" value="1" required> 1
+          <input type="radio" name="q3" value="2"> 2
+          <input type="radio" name="q3" value="3"> 3
+          <input type="radio" name="q3" value="4"> 4
+          <input type="radio" name="q3" value="5"> 5
+        </div>
+        <div class="question-block">
+          <label>4. I feel little concern for others.</label><br />
+          <input type="radio" name="q4" value="1" required> 1
+          <input type="radio" name="q4" value="2"> 2
+          <input type="radio" name="q4" value="3"> 3
+          <input type="radio" name="q4" value="4"> 4
+          <input type="radio" name="q4" value="5"> 5
+        </div>
+        <div class="question-block">
+          <label>5. I get stressed out easily.</label><br />
+          <input type="radio" name="q5" value="1" required> 1
+          <input type="radio" name="q5" value="2"> 2
+          <input type="radio" name="q5" value="3"> 3
+          <input type="radio" name="q5" value="4"> 4
+          <input type="radio" name="q5" value="5"> 5
+        </div>
+      </div>
+
+      <!-- NAVIGATION -->
+      <div id="navigation">
+        <button type="submit" id="submit-btn" style="display: none;">Submit</button>
+      </div>
+    </form>
+
+    <!-- RESULTS -->
+    <div id="result-section" style="display: none;"></div>
+  </main>
+
+  <script>
+    let currentPage = 0;
+    const totalPages = 1;
+    const form = document.getElementById("bigfive-form");
+    const navDiv = document.getElementById("navigation");
+
+    const prevBtn = document.createElement("button");
+    prevBtn.textContent = "Previous";
+    prevBtn.type = "button";
+    prevBtn.id = "prev-btn";
+    navDiv.insertBefore(prevBtn, navDiv.firstChild);
+
+    const nextBtn = document.createElement("button");
+    nextBtn.textContent = "Next";
+    nextBtn.type = "button";
+    nextBtn.id = "next-btn";
+    navDiv.insertBefore(nextBtn, document.getElementById("submit-btn"));
+
+    const submitBtn = document.getElementById("submit-btn");
+
+    function showPage(index) {
+      document.querySelectorAll(".form-page").forEach((page, i) => {
+        page.style.display = i === index ? "block" : "none";
+      });
+      prevBtn.style.display = index === 0 ? "none" : "inline-block";
+      nextBtn.style.display = index === totalPages ? "none" : "inline-block";
+      submitBtn.style.display = index === totalPages ? "inline-block" : "none";
+    }
+
+    prevBtn.addEventListener("click", () => {
+      if (currentPage > 0) currentPage--;
+      showPage(currentPage);
+    });
+
+    nextBtn.addEventListener("click", () => {
+      const name = document.getElementById("name").value.trim();
+      const sex = document.getElementById("sex").value;
+      const age = document.getElementById("age").value.trim();
+
+      document.getElementById("name-error").textContent = "";
+      document.getElementById("sex-error").textContent = "";
+      document.getElementById("age-error").textContent = "";
+
+      let valid = true;
+      if (!name) { document.getElementById("name-error").textContent = "Name is required."; valid = false; }
+      if (!sex) { document.getElementById("sex-error").textContent = "Please select your sex."; valid = false; }
+      if (!age) { document.getElementById("age-error").textContent = "Age is required."; valid = false; }
+
+      if (!valid) return;
+      currentPage++;
+      showPage(currentPage);
+    });
+
+    showPage(currentPage);
+
+    form.addEventListener("submit", async function (event) {
+      event.preventDefault();
+
+      const name = document.getElementById("name").value;
+      const sex = document.getElementById("sex").value;
+      const age = document.getElementById("age").value;
+
+      const items = [
+        { id: 1, trait: "Openness", label: "O_Q1", question: "I have a rich vocabulary.", reverse: false },
+        { id: 2, trait: "Conscientiousness", label: "C_Q1", question: "I am always prepared.", reverse: false },
+        { id: 3, trait: "Extraversion", label: "E_Q1", question: "I am the life of the party.", reverse: false },
+        { id: 4, trait: "Agreeableness", label: "A_Q1", question: "I feel little concern for others.", reverse: true },
+        { id: 5, trait: "Neuroticism", label: "N_Q1", question: "I get stressed out easily.", reverse: false }
+      ];
+
+      const responses = [];
+      const traitSums = { Openness: [], Conscientiousness: [], Extraversion: [], Agreeableness: [], Neuroticism: [] };
+
+      for (let item of items) {
+        const val = document.querySelector(`input[name="q${item.id}"]:checked`);
+        if (val) {
+          let score = parseInt(val.value);
+          if (item.reverse) score = 6 - score;
+          responses.push({ ...item, score });
+          traitSums[item.trait].push(score);
+        }
+      }
+
+      const traitAverages = {};
+      for (let trait in traitSums) {
+        const scores = traitSums[trait];
+        traitAverages[trait] = scores.length ? (scores.reduce((a, b) => a + b, 0) / scores.length).toFixed(2) : "N/A";
+      }
+
+      try {
+        const submitRes = await fetch("/submit", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ name, sex, age, responses })
+        });
+        if (!submitRes.ok) throw new Error("Failed to save results");
+        await submitRes.json();
+        console.log("✅ Data submitted, fetching percentiles...");
+
+        const percentileRes = await fetch("/percentiles", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ traitScores: traitAverages })
+        });
+
+        if (!percentileRes.ok) throw new Error("Failed to fetch percentiles");
+        const { percentiles, participantCount } = await percentileRes.json();
+        console.log("📊 Percentile data:", percentiles, "Participant count:", participantCount);
+
+        let output = "<h2>Your Big Five Scores</h2>";
+        if (participantCount < 30) {
+          output += `<p><em>You're among the first ${participantCount} participants. Percentile scores may be less accurate until more data is collected.</em></p>`;
+        }
+
+        output += "<ul>";
+        for (let trait in traitAverages) {
+          const percentile = percentiles[trait];
+          output += `<li><b>${trait}:</b> ${percentile} percentile</li>`;
+        }
+        output += "</ul><button id='download-btn'>Download Results</button><button id='start-over-btn'>Start Over</button>";
+
+        const resultSection = document.getElementById("result-section");
+        resultSection.innerHTML = "";
+        const resultDiv = document.createElement("div");
+        resultDiv.className = "result-box";
+        resultDiv.innerHTML = output;
+        resultSection.appendChild(resultDiv);
+
+        document.getElementById("download-btn").addEventListener("click", function () {
+          const csvRows = [["Name", "Sex", "Age", "Trait", "Label", "Question", "Score"]];
+          const order = ["Openness", "Conscientiousness", "Extraversion", "Agreeableness", "Neuroticism"];
+          responses.sort((a, b) => order.indexOf(a.trait) - order.indexOf(b.trait)).forEach(item => {
+            csvRows.push([name, sex, age, item.trait, item.label, item.question, item.score]);
+          });
+
+          const blob = new Blob([csvRows.map(e => e.join(",")).join("\n")], { type: "text/csv" });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement("a");
+          a.href = url;
+          a.download = "bigfive_results.csv";
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+        });
+
+        document.getElementById("start-over-btn").addEventListener("click", () => location.reload());
+
+        form.style.display = "none";
+        navDiv.style.display = "none";
+        resultSection.style.display = "block";
+      } catch (err) {
+        console.error("❌ Error:", err);
+        alert("An error occurred while saving your results. Please try again later.");
+      }
+    });
+  </script>
+</body>
+</html>
