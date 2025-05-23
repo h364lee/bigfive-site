@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <title>Big Five Personality Test</title>
   <link rel="stylesheet" href="style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
   <header>
@@ -136,7 +137,13 @@
       let valid = true;
       if (!name) { document.getElementById("name-error").textContent = "Name is required."; valid = false; }
       if (!sex) { document.getElementById("sex-error").textContent = "Please select your sex."; valid = false; }
-      if (!age) { document.getElementById("age-error").textContent = "Age is required."; valid = false; }
+      if (!age) { 
+        document.getElementById("age-error").textContent = "Age is required."; 
+        valid = false; 
+      } else if (age < 10 || age > 120) {
+        document.getElementById("age-error").textContent = "Age must be between 10 and 120.";
+        valid = false;
+      }
 
       if (!valid) return;
       currentPage++;
@@ -205,9 +212,21 @@
         }
 
         output += "<ul>";
+        function getOrdinalSuffix(n) {
+          const num = parseFloat(n);
+          if (isNaN(num)) return "";
+          const j = num % 10,
+                k = num % 100;
+          if (j === 1 && k !== 11) return "st";
+          if (j === 2 && k !== 12) return "nd";
+          if (j === 3 && k !== 13) return "rd";
+          return "th";
+        }
+
         for (let trait in traitAverages) {
           const percentile = percentiles[trait];
-          output += `<li><b>${trait}:</b> ${percentile} percentile</li>`;
+          output += `<li><b>${trait}:</b> ${percentile}${getOrdinalSuffix(percentile)} percentile</li>`;
+          output += `<canvas id="chart-${trait}" width="400" height="200"></canvas>`;
         }
         output += "</ul><button id='download-btn'>Download Results</button><button id='start-over-btn'>Start Over</button>";
 
@@ -217,6 +236,80 @@
         resultDiv.className = "result-box";
         resultDiv.innerHTML = output;
         resultSection.appendChild(resultDiv);
+        for (let trait in traitAverages) {
+          const canvas = document.getElementById(`chart-${trait}`);
+          if (!canvas) continue;
+
+          const percentileX = parseFloat(percentiles[trait]);
+          const percentileY = Math.exp(-0.5 * Math.pow((percentileX - 50) / 15, 2)); // get Y at that X
+
+          const data = [];
+          for (let i = 0; i <= 100; i++) {
+            const y = Math.exp(-0.5 * Math.pow((i - 50) / 15, 2));
+            data.push({ x: i, y });
+          }
+
+          new Chart(canvas, {
+            type: 'line',
+            data: {
+              datasets: [
+                {
+                  label: "Normal Distribution",
+                  data: data,
+                  parsing: { xAxisKey: 'x', yAxisKey: 'y' },
+                  borderWidth: 2,
+                  fill: false,
+                  borderColor: "#666",
+                  pointRadius: 0
+                },
+                {
+                  label: "Your Percentile (Dot)",
+                  data: [{ x: percentileX, y: percentileY }],
+                  backgroundColor: "red",
+                  pointRadius: 5,
+                  type: "scatter"
+                },
+                {
+                  label: "Your Percentile (Line)",
+                  data: [
+                    { x: percentileX, y: 0 },
+                    { x: percentileX, y: percentileY }
+                  ],
+                  type: "line",
+                  borderColor: "red",
+                  borderWidth: 2,
+                  pointRadius: 0
+                }
+              ]
+            },
+            options: {
+              responsive: true,
+              plugins: {
+                legend: { display: false }
+              },
+              scales: {
+                x: {
+                  type: 'linear',
+                  position: 'bottom',
+                  min: 0,
+                  max: 100,
+                  title: {
+                    display: true,
+                    text: "Percentile"
+                  }
+                },
+                y: {
+                  type: 'linear',
+                  position: 'left',
+                  min: 0,
+                  max: 1.1,
+                  display: false
+                }
+              }
+            }
+          });
+        }
+
 
         document.getElementById("download-btn").addEventListener("click", function () {
           const csvRows = [["Name", "Sex", "Age", "Trait", "Label", "Question", "Score"]];

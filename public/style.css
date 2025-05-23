@@ -117,4 +117,15 @@ body {
     display: block;
   }
   
-  
+  canvas {
+  max-width: 100%;
+  height: auto;
+  margin-top: 20px;
+}
+
+.result-box canvas {
+  display: block;
+  margin: 0 auto;
+  max-width: 600px;
+  height: 200px !important;
+}

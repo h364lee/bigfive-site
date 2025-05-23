@@ -55,7 +55,7 @@ app.post("/submit", (req, res) => {
 });
 
 // API endpoint to get percentiles for the latest participant
-app.get("/percentiles", (req, res) => {
+app.post("/percentiles", (req, res) => {
   const traitScores = {
     Openness: [],
     Conscientiousness: [],
